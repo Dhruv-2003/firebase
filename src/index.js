@@ -9,6 +9,8 @@ import {
   onSnapshot,
   query,
   where,
+  orderBy,
+  serverTimestamp,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -27,7 +29,7 @@ const db = getFirestore();
 const colRef = collection(db, "books");
 
 /// queries
-// const q = query(colRef, where("author", "==", "Jamer Clear"));
+const q = query(colRef, orderBy("createdAt"));
 
 // getDocs(colRef)
 //   .then((snapshot) => {
@@ -43,17 +45,7 @@ const colRef = collection(db, "books");
 //     console.log(err.message);
 //   });
 
-onSnapshot(colRef, (snapshot) => {
-  let books = [];
-
-  snapshot.docs.forEach((doc) => {
-    books.push({ ...doc.data(), id: doc.id });
-  });
-
-  console.log(books);
-});
-
-// onSnapshot(q, (snapshot) => {
+// onSnapshot(colRef, (snapshot) => {
 //   let books = [];
 
 //   snapshot.docs.forEach((doc) => {
@@ -63,6 +55,16 @@ onSnapshot(colRef, (snapshot) => {
 //   console.log(books);
 // });
 
+onSnapshot(q, (snapshot) => {
+  let books = [];
+
+  snapshot.docs.forEach((doc) => {
+    books.push({ ...doc.data(), id: doc.id });
+  });
+
+  console.log(books);
+});
+
 const addBookForm = document.querySelector(".add");
 addBookForm.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -70,6 +72,7 @@ addBookForm.addEventListener("submit", (e) => {
   addDoc(colRef, {
     title: addBookForm.title.value,
     author: addBookForm.author.value,
+    createdAt: serverTimestamp(),
   }).then(() => {
     addBookForm.reset();
   });
