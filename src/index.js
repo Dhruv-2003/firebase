@@ -7,6 +7,8 @@ import {
   deleteDoc,
   doc,
   onSnapshot,
+  query,
+  where,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -24,19 +26,22 @@ const db = getFirestore();
 
 const colRef = collection(db, "books");
 
-getDocs(colRef)
-  .then((snapshot) => {
-    let books = [];
+/// queries
+// const q = query(colRef, where("author", "==", "Jamer Clear"));
 
-    snapshot.docs.forEach((doc) => {
-      books.push({ ...doc.data(), id: doc.id });
-    });
+// getDocs(colRef)
+//   .then((snapshot) => {
+//     let books = [];
 
-    console.log(books);
-  })
-  .catch((err) => {
-    console.log(err.message);
-  });
+//     snapshot.docs.forEach((doc) => {
+//       books.push({ ...doc.data(), id: doc.id });
+//     });
+
+//     console.log(books);
+//   })
+//   .catch((err) => {
+//     console.log(err.message);
+//   });
 
 onSnapshot(colRef, (snapshot) => {
   let books = [];
@@ -47,6 +52,16 @@ onSnapshot(colRef, (snapshot) => {
 
   console.log(books);
 });
+
+// onSnapshot(q, (snapshot) => {
+//   let books = [];
+
+//   snapshot.docs.forEach((doc) => {
+//     books.push({ ...doc.data(), id: doc.id });
+//   });
+
+//   console.log(books);
+// });
 
 const addBookForm = document.querySelector(".add");
 addBookForm.addEventListener("submit", (e) => {
